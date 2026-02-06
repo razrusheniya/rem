@@ -13,8 +13,8 @@ fn is_prime(n) {
 
 fn main(argc, argv) {
     let result = is_prime({
-        let value = 0
-        if argc > 1 then sscanf(argv[1], "%d", &value)
+        let value
+        if argc > 1 then sscanf(argv[1], "%d", &value) else return 0
         value
     })
 

@@ -16,7 +16,9 @@
 
 For example, the "Counter App" written by Rem using GTK+3.0 running on GNOME desktop.
 
-https://github.com/user-attachments/assets/4ac910cd-9c16-467e-96b4-2ed43ae99bfb
+
+https://github.com/user-attachments/assets/71d64e59-2969-4a10-b851-852a40acf384
+
 
 ## Goal
 

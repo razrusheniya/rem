@@ -156,9 +156,8 @@ impl Expr {
             Expr::Let(name, value) => match &**name {
                 Expr::Variable(name) => {
                     let idx = ctx.local.var.get_index_of(name).unwrap_or({
-                        let idx = ctx.local.var.len();
                         ctx.local.var.insert(name.clone());
-                        idx
+                        ctx.local.var.len() - 1
                     });
                     Ok(format!(
                         "{}\tmov qword [rbp-{}], rax\n",

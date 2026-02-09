@@ -84,9 +84,9 @@ impl Expr {
         macro_rules! write {
             ($size: expr) => {
                 match $size {
-                    Size::Byte => format!("\tmovzx r10b, r10\n"),
-                    Size::Word => format!("\tmovzx r10w, r10\n"),
-                    Size::Long => format!("\tmovzx r10d, r10\n"),
+                    Size::Byte => format!("\tmov r10b, r10\n"),
+                    Size::Word => format!("\tmov r10w, r10\n"),
+                    Size::Long => format!("\tmov r10d, r10\n"),
                     Size::Normal => String::new(),
                 }
             };
@@ -190,7 +190,7 @@ impl Expr {
                     ))
                 }
                 Expr::Derefer(ptr, size) => Ok(format!(
-                    "{}\tpush rax\n{}\tpop r10\n\t{}\n\tmov {size:?} [rax], r10\n",
+                    "{}\tpush rax\n{}\tpop r10\n{}\tmov {size:?} [rax], r10\n",
                     value.emit(ctx)?,
                     ptr.emit(ctx)?,
                     write!(size),

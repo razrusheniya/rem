@@ -18,23 +18,22 @@ impl Debug for Expr {
                 write!(f, "break {expr:?}")
             }
             Expr::Return(expr) => write!(f, "return {expr:?}"),
-            Expr::Block(lines) => write!(
-                f,
-                "{{\n{}\n}}",
-                lines
+            Expr::Block(lines) => {
+                let lines = lines
                     .iter()
                     .map(|line| format!("\t{line:?}"))
                     .collect::<Vec<String>>()
-                    .join("\n")
-            ),
-            Expr::Call(callee, args) => write!(
-                f,
-                "{callee:?}({})",
-                args.iter()
+                    .join("\n");
+                write!(f, "{{\n{lines}\n}}")
+            }
+            Expr::Call(callee, args) => {
+                let args = args
+                    .iter()
                     .map(|arg| format!("{arg:?}"))
                     .collect::<Vec<String>>()
-                    .join(", ")
-            ),
+                    .join(", ");
+                write!(f, "{callee:?}({args})")
+            }
             Expr::Variable(name) => write!(f, "{name}"),
             Expr::Pointer(var) => write!(f, "&{var}"),
             Expr::Derefer(expr) => write!(f, "*{expr:?}"),

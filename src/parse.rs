@@ -87,11 +87,17 @@ impl Expr {
         } else if let Ok(operator) = parse_op(&token) {
             Ok(operator)
         } else if let Some(ptr) = token.strip_prefix("*") {
-            Ok(Expr::Derefer(Box::new(Expr::parse(ptr)?)))
+            Ok(Expr::Derefer(Box::new(Expr::parse(ptr)?), Size::Normal))
+        } else if let Some(ptr) = token.strip_prefix("~") {
+            Ok(Expr::Derefer(Box::new(Expr::parse(ptr)?), Size::Byte))
+        } else if let Some(ptr) = token.strip_prefix("¥") {
+            Ok(Expr::Derefer(Box::new(Expr::parse(ptr)?), Size::Word))
+        } else if let Some(ptr) = token.strip_prefix("@") {
+            Ok(Expr::Derefer(Box::new(Expr::parse(ptr)?), Size::Long))
         } else if let Some(ptr) = token.strip_prefix("&") {
             if let Ok(name) = Name::new(ptr) {
                 Ok(Expr::Pointer(name))
-            } else if let Ok(Expr::Derefer(ptr)) = Expr::parse(ptr) {
+            } else if let Ok(Expr::Derefer(ptr, _)) = Expr::parse(ptr) {
                 Ok(*ptr.clone())
             } else {
                 Err(format!("invalid reference"))
@@ -111,13 +117,16 @@ impl Expr {
             ))
         } else if let (true, Some(expr)) = (token.contains("["), token.strip_suffix("]")) {
             let (arr, idx) = ok!(expr.rsplit_once("["))?;
-            Ok(Expr::Derefer(Box::new(Expr::Add(
-                Box::new(Expr::parse(arr)?),
-                Box::new(Expr::Mul(
-                    Box::new(Expr::parse(idx)?),
-                    Box::new(Expr::Integer(8)),
+            Ok(Expr::Derefer(
+                Box::new(Expr::Add(
+                    Box::new(Expr::parse(arr)?),
+                    Box::new(Expr::Mul(
+                        Box::new(Expr::parse(idx)?),
+                        Box::new(Expr::Integer(8)),
+                    )),
                 )),
-            ))))
+                Size::Normal,
+            ))
         } else if let Ok(literal) = token.parse::<i64>() {
             Ok(Expr::Integer(literal))
         } else if let Ok(literal) = token.parse::<bool>() {

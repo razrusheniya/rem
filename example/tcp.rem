@@ -1,38 +1,36 @@
-int main() {
-    int sockfd, new_sockfd;
-    socklen_t clilen;
-    char buffer[256];
-    struct sockaddr_in serv_addr, cli_addr;
-    int n;
+fn main() {
+    let sockfd
+    let new_sockfd
+    let clilen
+    let buffer = malloc(256)
+    let serv_addr = malloc(16)
+    let cli_addr = malloc(16)
 
-    // ソケットを作成する
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0) {
-        perror("ERROR opening socket");
-        exit(1);
+    let sockfd = socket(2, 1, 0)
+    if sockfd < 0 then {
+        perror("ERROR opening socket")
+        exit(1)
     }
 
-    // ソケットにアドレスを割り当てる
-    memset((char *)&serv_addr, 0, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons(PORT);
-    if (bind(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-        perror("ERROR on binding");
-        exit(1);
+    memset(&serv_addr, 0, 16)
+    let ~serv_addr = 2
+    let ~(serv_addr + 2) = 0
+    let *(serv_addr + 8) = htons(5000)
+    if bind(sockfd, &serv_addr, 16) < 0 then {
+        perror("ERROR on binding")
+        exit(1)
     }
 
-    // クライアントからの接続を待つ
-    listen(sockfd, 5);
-    clilen = sizeof(cli_addr);
-    let new_sockfd = accept(sockfd, &cli_addr, &clilen);
+    listen(sockfd, 5)
+    let clilen = sizeof(cli_addr)
+    let new_sockfd = accept(sockfd, &cli_addr, &clilen)
     if new_sockfd < 0 then {
         perror("ERROR on accept")
         exit(1)
     }
 
-    memset(buffer, 0, 256);
-    let n = recv(new_sockfd, buffer, 255, 0);
+    memset(buffer, 0, 256)
+    let n = recv(new_sockfd, buffer, 255, 0)
     if n < 0 then {
         perror("ERROR reading from socket")
         exit(1)

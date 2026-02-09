@@ -71,26 +71,35 @@ impl Expr {
                 )
             };
         }
-        macro_rules! read {
+        macro_rules! rax {
             ($size: expr) => {
                 match $size {
-                    Size::Byte => format!("\tmovzx rax, al\n"),
-                    Size::Word => format!("\tmovzx rax, ax\n"),
-                    Size::Long => format!("\tmovzx rax, eax\n"),
-                    Size::Normal => String::new(),
+                    Size::Byte => "al",
+                    Size::Word => "ax",
+                    Size::Long => "eax",
+                    Size::Normal => "rax",
                 }
             };
         }
-        macro_rules! write {
+        macro_rules! r10 {
             ($size: expr) => {
                 match $size {
-                    Size::Byte => format!("\tmov r10b, r10\n"),
-                    Size::Word => format!("\tmov r10w, r10\n"),
-                    Size::Long => format!("\tmov r10d, r10\n"),
-                    Size::Normal => String::new(),
+                    Size::Byte => "r10b",
+                    Size::Word => "r10w",
+                    Size::Long => "r10d",
+                    Size::Normal => "r10",
                 }
             };
         }
+        macro_rules! not_64bit {
+            ($size:expr, $code: expr) => {
+                match $size {
+                    Size::Normal => String::new(),
+                    _ => $code,
+                }
+            };
+        }
+
         macro_rules! label {
             () => {{
                 let id = ctx.global.idx;
@@ -173,9 +182,10 @@ impl Expr {
                 }
             }
             Expr::Derefer(expr, size) => Ok(format!(
-                "{}\tmovzx {size}, [rax]\n{}",
+                "{}\tmovzx {size} {}, [rax]\n{}",
                 expr.emit(ctx)?,
-                read!(size)
+                rax!(size),
+                not_64bit!(size, format!("mov {}, rax", rax!(size))),
             )),
             Expr::Let(name, value) => match &**name {
                 Expr::Variable(name) => {
@@ -190,10 +200,11 @@ impl Expr {
                     ))
                 }
                 Expr::Derefer(ptr, size) => Ok(format!(
-                    "{}\tpush rax\n{}\tpop r10\n{}\tmov {size:?} [rax], r10\n",
+                    "{}\tpush rax\n{}\tpop r10\n\t{}\n\tmov {size:?} [rax], {}\n",
                     value.emit(ctx)?,
                     ptr.emit(ctx)?,
-                    write!(size),
+                    not_64bit!(size, format!("movzx {}, r10", r10!(size),)),
+                    r10!(size),
                 )),
                 _ => Err(format!("invalid assign　to: {name:?}")),
             },

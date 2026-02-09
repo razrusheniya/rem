@@ -170,7 +170,7 @@ impl Expr {
                     value.emit(ctx)?,
                     ptr.emit(ctx)?
                 )),
-                _ => Err(format!("invalid assign: {name:?}")),
+                _ => Err(format!("invalid assign　to: {name:?}")),
             },
             Expr::Integer(value) => Ok(format!("\tmov rax, {value}\n")),
             Expr::String(value) => {

@@ -1,5 +1,5 @@
 use crate::*;
-use std::fmt::{Debug, Display, Formatter, Result};
+use std::fmt::{Debug, Formatter, Result};
 
 impl Debug for Expr {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
@@ -36,10 +36,7 @@ impl Debug for Expr {
             }
             Expr::Variable(name) => write!(f, "{name}"),
             Expr::Pointer(var) => write!(f, "&{var}"),
-            Expr::Derefer(expr, Size::Normal) => write!(f, "*{expr:?}"),
-            Expr::Derefer(expr, Size::Byte) => write!(f, "~{expr:?}"),
-            Expr::Derefer(expr, Size::Word) => write!(f, "¥{expr:?}"),
-            Expr::Derefer(expr, Size::Long) => write!(f, "@{expr:?}"),
+            Expr::Derefer(expr) => write!(f, "*{expr:?}"),
             Expr::Let(name, value) => write!(f, "let {name:?} = {value:?}"),
             Expr::Integer(value) => write!(f, "{value}"),
             Expr::String(value) => write!(f, "{value}"),
@@ -57,28 +54,6 @@ impl Debug for Expr {
             Expr::Xor(lhs, rhs) => write!(f, "({lhs:?} ^ {rhs:?})"),
             Expr::Div(lhs, rhs) => write!(f, "({lhs:?} / {rhs:?})"),
             Expr::Mod(lhs, rhs) => write!(f, "({lhs:?} % {rhs:?})"),
-        }
-    }
-}
-
-impl Display for Size {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        match self.clone() {
-            Size::Byte => write!(f, "al"),
-            Size::Word => write!(f, "ax"),
-            Size::Long => write!(f, "eax"),
-            Size::Normal => write!(f, "rax"),
-        }
-    }
-}
-
-impl Debug for Size {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        match self.clone() {
-            Size::Byte => write!(f, "byte"),
-            Size::Word => write!(f, "word"),
-            Size::Long => write!(f, "dword"),
-            Size::Normal => write!(f, "qword"),
         }
     }
 }

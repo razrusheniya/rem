@@ -80,6 +80,10 @@ impl Expr {
             Ok(Expr::Break(Box::new(Expr::parse(&token)?)))
         } else if let Some(token) = token.strip_prefix("return ") {
             Ok(Expr::Return(Box::new(Expr::parse(&token)?)))
+        } else if token == "break" {
+            Ok(Expr::Break(Box::new(Expr::Integer(0))))
+        } else if token == "return" {
+            Ok(Expr::Return(Box::new(Expr::Integer(0))))
         } else if let Ok(operator) = parse_op(&token) {
             Ok(operator)
         } else if let Some(ptr) = token.strip_prefix("*") {

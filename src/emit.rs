@@ -206,7 +206,7 @@ impl Expr {
                     not_64bit!(
                         size,
                         format!(
-                            "movzx {r10}, r10\tmov {}, {r10}",
+                            "movzx {r10}, r10\n\tmov {}, {r10}",
                             rax!(size),
                             r10 = r10!(size),
                         )

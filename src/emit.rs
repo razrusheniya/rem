@@ -200,7 +200,7 @@ impl Expr {
                     ))
                 }
                 Expr::Derefer(ptr, size) => Ok(format!(
-                    "{}\tpush rax\n{}\tpop r10\n\t{}\n\tmov {size:?} [qword rax], {}\n",
+                    "{}\tpush rax\n{}\tpop r10\n\t{}\n\tmov {size:?} [rax], {}\n",
                     value.emit(ctx)?,
                     ptr.emit(ctx)?,
                     not_64bit!(size, format!("movzx {}, r10", r10!(size),)),

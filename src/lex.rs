@@ -12,7 +12,7 @@ pub mod name {
         pub fn new(name: &str) -> Result<Name, String> {
             let name = name.trim();
             if name.is_empty() {
-                return Err("empty name".to_string());
+                return Err(format!("empty name"));
             }
             if !name
                 .chars()

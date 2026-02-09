@@ -1,4 +1,5 @@
 pub mod emit;
+mod fmt;
 pub mod lex;
 mod parse;
 

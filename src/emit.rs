@@ -200,11 +200,18 @@ impl Expr {
                     ))
                 }
                 Expr::Derefer(ptr, size) => Ok(format!(
-                    "{}\tpush rax\n{}\tpop r10\n\t{}\n\tmov {size:?} [rax], {}\n",
+                    "{}\tpush rax\n{}\tpop r10\n{}\tmov {size:?} [rax], {temp}\n",
                     value.emit(ctx)?,
                     ptr.emit(ctx)?,
-                    not_64bit!(size, format!("movzx {}, r10", r10!(size),)),
-                    r10!(size),
+                    not_64bit!(
+                        size,
+                        format!(
+                            "movzx {r10}, r10\tmov {}, {r10}",
+                            rax!(size),
+                            r10 = r10!(size),
+                        )
+                    ),
+                    temp = rax!(size)
                 )),
                 _ => Err(format!("invalid assign　to: {name:?}")),
             },

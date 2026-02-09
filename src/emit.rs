@@ -71,6 +71,26 @@ impl Expr {
                 )
             };
         }
+        macro_rules! read {
+            ($size: expr) => {
+                match $size {
+                    Size::Byte => format!("\tmovzx rax, al\n"),
+                    Size::Word => format!("\tmovzx rax, ax\n"),
+                    Size::Long => format!("\tmovzx rax, eax\n"),
+                    Size::Normal => String::new(),
+                }
+            };
+        }
+        macro_rules! write {
+            ($size: expr) => {
+                match $size {
+                    Size::Byte => format!("\tmovzx r10b, r10\n"),
+                    Size::Word => format!("\tmovzx r10w, r10\n"),
+                    Size::Long => format!("\tmovzx r10d, r10\n"),
+                    Size::Normal => String::new(),
+                }
+            };
+        }
         macro_rules! label {
             () => {{
                 let id = ctx.global.idx;
@@ -152,7 +172,11 @@ impl Expr {
                     Err(format!("undefined variable: {var}"))
                 }
             }
-            Expr::Derefer(expr) => Ok(format!("{}\tmov rax, [rax]\n", expr.emit(ctx)?)),
+            Expr::Derefer(expr, size) => Ok(format!(
+                "{}\tmovzx {size}, [rax]\n{}",
+                expr.emit(ctx)?,
+                read!(size)
+            )),
             Expr::Let(name, value) => match &**name {
                 Expr::Variable(name) => {
                     let idx = ctx.local.var.get_index_of(name).unwrap_or({
@@ -160,15 +184,16 @@ impl Expr {
                         ctx.local.var.len() - 1
                     });
                     Ok(format!(
-                        "{}\tmov qword [rbp-{}], rax\n",
+                        "{}\tmov [rbp-{}], rax\n",
                         value.emit(ctx)?,
-                        (idx + 1) * 8
+                        (idx + 1) * 8,
                     ))
                 }
-                Expr::Derefer(ptr) => Ok(format!(
-                    "{}\tpush rax\n{}\tpop r10\n\tmov [rax], r10\n",
+                Expr::Derefer(ptr, size) => Ok(format!(
+                    "{}\tpush rax\n{}\tpop r10\n\t{}\n\tmov {size:?} [rax], r10\n",
                     value.emit(ctx)?,
-                    ptr.emit(ctx)?
+                    ptr.emit(ctx)?,
+                    write!(size),
                 )),
                 _ => Err(format!("invalid assign　to: {name:?}")),
             },

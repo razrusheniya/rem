@@ -13,10 +13,10 @@ impl Define {
             let mut prologue = String::new();
             for (idx, _arg) in args.iter().enumerate() {
                 if let Some(reg) = ABI.get(idx) {
-                    prologue += &format!("\tmov qword [rbp-{addr}], {reg}\n");
+                    prologue += &format!("\tmov [rbp-{addr}], {reg}\n");
                 } else {
                     prologue += &format!(
-                        "\tmov rax, [rbp+{}]\n\tmov qword [rbp-{addr}], rax\n",
+                        "\tmov rax, [rbp+{}]\n\tmov [rbp-{addr}], rax\n",
                         (idx - 4) * 8
                     );
                 }

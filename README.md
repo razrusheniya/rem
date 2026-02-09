@@ -27,6 +27,6 @@ The **Rem** project aims to be useful programming language optimized for Linux c
 Rem just **simplifies** C with expression-based syntax. 
 
 > [!TIP]
-> I'm considering entry to 2026 U-22 Programming Contest.
+> I'm considering entry to 2026 U-22 Programming Contest
 
-Thanks for support Rem project
+Thanks for support Rem project.

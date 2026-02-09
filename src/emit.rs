@@ -17,7 +17,7 @@ impl Define {
                 } else {
                     prologue += &format!(
                         "\tmov rax, [rbp+{}]\n\tmov qword [rbp-{addr}], rax\n",
-                        (idx - 4) * 8
+                        (idx - 3) * 8
                     );
                 }
                 addr += 8;

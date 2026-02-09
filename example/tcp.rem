@@ -25,7 +25,7 @@ int main() {
     // クライアントからの接続を待つ
     listen(sockfd, 5);
     clilen = sizeof(cli_addr);
-    new_sockfd = accept(sockfd, (struct sockaddr *)&cli_addr, &clilen);
+    let new_sockfd = accept(sockfd, &cli_addr, &clilen);
     if new_sockfd < 0 then {
         perror("ERROR on accept")
         exit(1)

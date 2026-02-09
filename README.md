@@ -4,7 +4,7 @@
 ***Make C more easy to code!*** the low-layer programming language
 
 > [!NOTE]
-> Compile for x86_64 GNU/Linux only (tested on Debian)
+> Compile for x86_64 Linux PC only (tested on Debian)
 
 ## Features
 
@@ -22,9 +22,9 @@ https://github.com/user-attachments/assets/71d64e59-2969-4a10-b851-852a40acf384
 
 ## Goal
 
-The **Rem** project aims to be useful programming language optimized for GNU/Linux computing.
+The **Rem** project aims to be useful programming language optimized for Linux computing.
 
-Rem just **simplifies** it with expression-based syntax. 
+Rem just **simplifies** C with expression-based syntax. 
 
 > [!TIP]
 > I'm considering entry to 2026 U-22 Programming Contest.

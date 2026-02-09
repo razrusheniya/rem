@@ -44,7 +44,7 @@ impl Define {
         }
 
         Ok(format!(
-            "bits 64\n\nsection .data\n{}\nsection .text\n\tglobal main\n{extrn}\n{output}\n",
+            "section .data\n{}\nsection .text\n\tglobal main\n{extrn}\n{output}\n",
             ctx.global.data,
         ))
     }

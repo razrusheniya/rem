@@ -42,7 +42,7 @@ pub enum Expr {
     // Reference
     Variable(Name),
     Pointer(Name),
-    Derefer(Box<Expr>),
+    Derefer(Box<Expr>, Size),
     Call(Box<Expr>, Vec<Expr>),
     // Structure
     Block(Vec<Expr>),
@@ -87,4 +87,12 @@ struct Global {
 struct Function {
     var: IndexSet<Name>,
     jmp: Vec<String>,
+}
+
+#[derive(Clone, PartialEq)]
+pub enum Size {
+    Byte = 8,
+    Word = 16,
+    Long = 32,
+    Normal = 64,
 }

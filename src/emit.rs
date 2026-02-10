@@ -160,7 +160,7 @@ impl Expr {
                         ctx.local.var.len() - 1
                     });
                     Ok(format!(
-                        "{}\tmov qword [rbp-{}], rax\n",
+                        "{}\tmov [rbp-{}], rax\n",
                         value.emit(ctx)?,
                         (idx + 1) * 8
                     ))

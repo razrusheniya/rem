@@ -10,7 +10,7 @@
 
 - Link with the GNU C Library (glibc) because aligned to the System V ABI
 - Everything is expression, that may returns value (stored in `rax` register)
-- No type system! all-values are 64-bit binary, you can freely operate it
+- No type system! all-values are 64-bit interger, you can freely operate it
 
 ## Demo
 

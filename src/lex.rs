@@ -89,7 +89,7 @@ pub fn tokenize(input: &str, delimiter: &str) -> Result<Vec<String>, String> {
 
     // Syntax error check
     if is_escape || in_quote || in_parentheses != 0 {
-        return Err(format!("nested syntax but not closed"));
+        return Err(format!("not closed: {current_token}"));
     }
     if !current_token.is_empty() {
         tokens.push(current_token.clone());

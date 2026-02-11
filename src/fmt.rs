@@ -21,7 +21,12 @@ impl Debug for Expr {
             Expr::Block(lines) => {
                 let lines = lines
                     .iter()
-                    .map(|line| format!("\t{line:?}"))
+                    .map(|line| format!("{line:?}"))
+                    .collect::<Vec<String>>()
+                    .join("\n");
+                let lines = lines
+                    .lines()
+                    .map(|line| format!("\n{line}"))
                     .collect::<Vec<String>>()
                     .join("\n");
                 write!(f, "{{\n{lines}\n}}")

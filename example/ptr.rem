@@ -3,6 +3,6 @@ fn double(n) n * 2
 fn compose(f, g, x) f(g(x))
 
 fn main() {
-    let x = compose(double, inc, 3)
-    printf("x = %d\n", x)
+    let y = compose(double, inc, 3)
+    printf("y = %d\n", y)
 }

@@ -101,7 +101,7 @@ impl Expr {
         } else if let Some(expr) = token.strip_prefix("(").and_then(|x| x.strip_suffix(")")) {
             Expr::parse(expr)
         } else if let (true, Some(expr)) = (token.contains("("), token.strip_suffix(")")) {
-            let (name, args) = once!(expr, "(")?;
+            let (name, args) = ok!(expr.split_once("("))?;
             Ok(Expr::Call(
                 Box::new(Expr::parse(&name)?),
                 tokenize(&args, ",")?
@@ -110,11 +110,11 @@ impl Expr {
                     .collect::<Result<Vec<_>, String>>()?,
             ))
         } else if let (true, Some(expr)) = (token.contains("["), token.strip_suffix("]")) {
-            let (arr, idx) = once!(expr, "[")?;
+            let (arr, idx) = ok!(expr.rsplit_once("["))?;
             Ok(Expr::Derefer(Box::new(Expr::Add(
-                Box::new(Expr::parse(&arr)?),
+                Box::new(Expr::parse(arr)?),
                 Box::new(Expr::Mul(
-                    Box::new(Expr::parse(&idx)?),
+                    Box::new(Expr::parse(idx)?),
                     Box::new(Expr::Integer(8)),
                 )),
             ))))

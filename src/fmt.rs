@@ -26,7 +26,7 @@ impl Debug for Expr {
                     .join("\n");
                 let lines = lines
                     .lines()
-                    .map(|line| format!("\n{line}"))
+                    .map(|line| format!("\t{line}"))
                     .collect::<Vec<String>>()
                     .join("\n");
                 write!(f, "{{\n{lines}\n}}")

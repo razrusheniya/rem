@@ -17,7 +17,9 @@ impl Debug for Expr {
             Expr::Break(expr) => {
                 write!(f, "break {expr:?}")
             }
-            Expr::Return(expr) => write!(f, "return {expr:?}"),
+            Expr::Return(expr) => {
+                write!(f, "return {expr:?}")
+            }
             Expr::Block(lines) => {
                 let lines = lines
                     .iter()
@@ -39,13 +41,13 @@ impl Debug for Expr {
                     .join(", ");
                 write!(f, "{callee:?}({args})")
             }
+            Expr::Undefined => write!(f, ""),
             Expr::Variable(name) => write!(f, "{name}"),
             Expr::Pointer(var) => write!(f, "&{var}"),
             Expr::Derefer(expr) => write!(f, "*{expr:?}"),
             Expr::Let(name, value) => write!(f, "let {name:?} = {value:?}"),
             Expr::Integer(value) => write!(f, "{value}"),
             Expr::String(value) => write!(f, "{value}"),
-            Expr::Undefined => write!(f, ""),
             Expr::Add(lhs, rhs) => write!(f, "({lhs:?} + {rhs:?})"),
             Expr::Sub(lhs, rhs) => write!(f, "({lhs:?} - {rhs:?})"),
             Expr::Mul(lhs, rhs) => write!(f, "({lhs:?} * {rhs:?})"),

@@ -39,6 +39,7 @@ pub enum Expr {
     // Literal
     Integer(i64),
     String(String),
+    Undefined,
     // Reference
     Variable(Name),
     Pointer(Name),

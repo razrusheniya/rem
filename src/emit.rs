@@ -184,6 +184,7 @@ impl Expr {
 
                 Ok(format!("\tmov rax, {name}\n"))
             }
+            Expr::Undefined => Ok(String::new()),
             Expr::Add(lhs, rhs) => Ok(op!("add", lhs, rhs)),
             Expr::Sub(lhs, rhs) => Ok(op!("sub", lhs, rhs)),
             Expr::Mul(lhs, rhs) => Ok(op!("imul", lhs, rhs)),

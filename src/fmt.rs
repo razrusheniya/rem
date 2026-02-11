@@ -40,6 +40,7 @@ impl Debug for Expr {
             Expr::Let(name, value) => write!(f, "let {name:?} = {value:?}"),
             Expr::Integer(value) => write!(f, "{value}"),
             Expr::String(value) => write!(f, "{value}"),
+            Expr::Undefined => write!(f, ""),
             Expr::Add(lhs, rhs) => write!(f, "({lhs:?} + {rhs:?})"),
             Expr::Sub(lhs, rhs) => write!(f, "({lhs:?} - {rhs:?})"),
             Expr::Mul(lhs, rhs) => write!(f, "({lhs:?} * {rhs:?})"),

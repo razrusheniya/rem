@@ -33,7 +33,7 @@ impl Expr {
             } else {
                 Ok(Expr::Let(
                     Box::new(Expr::parse(token)?),
-                    Box::new(Expr::Integer(0)),
+                    Box::new(Expr::Undefined),
                 ))
             }
         } else if let Some(token) = token.strip_prefix("if ") {
@@ -81,9 +81,9 @@ impl Expr {
         } else if let Some(token) = token.strip_prefix("return ") {
             Ok(Expr::Return(Box::new(Expr::parse(&token)?)))
         } else if token == "break" {
-            Ok(Expr::Break(Box::new(Expr::Integer(0))))
+            Ok(Expr::Break(Box::new(Expr::Undefined)))
         } else if token == "return" {
-            Ok(Expr::Return(Box::new(Expr::Integer(0))))
+            Ok(Expr::Return(Box::new(Expr::Undefined)))
         } else if let Ok(operator) = parse_op(&token) {
             Ok(operator)
         } else if let Some(ptr) = token.strip_prefix("*") {

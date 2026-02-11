@@ -15,6 +15,15 @@ install() {
 }
 
 update() {
+    git stash
     git pull
     cargo install --path .
 }
+
+if [ $1 = "--update" ]; then
+    update
+elif [ $1 = "--install" ]; then
+    install
+else
+    run "$@"
+fi

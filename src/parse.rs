@@ -25,10 +25,10 @@ impl Expr {
     pub fn parse(source: &str) -> Result<Expr, String> {
         let token = source.trim();
         if let Some(token) = token.strip_prefix("let ") {
-            if let Some((name, value)) = token.split_once("=") {
+            if let Ok((name, value)) = once!(token, "=") {
                 Ok(Expr::Let(
-                    Box::new(Expr::parse(name)?),
-                    Box::new(Expr::parse(value)?),
+                    Box::new(Expr::parse(&name)?),
+                    Box::new(Expr::parse(&value)?),
                 ))
             } else {
                 Ok(Expr::Let(

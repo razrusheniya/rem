@@ -9,7 +9,7 @@ impl Define {
         let ctx = &mut Context::default();
 
         for Define(name, args, body) in &defines {
-            let mut addr = 8;
+            let mut addr = 8usize;
             let mut prologue = String::new();
             for (idx, _arg) in args.iter().enumerate() {
                 if let Some(reg) = ABI.get(idx) {

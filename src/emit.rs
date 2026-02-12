@@ -37,7 +37,7 @@ impl Define {
         }
 
         for Define(name, _, _) in &defines {
-            ctx.global.func.swap_remove(name);
+            ctx.global.func.shift_remove(name);
         }
         for symbol in &ctx.global.func {
             extrn += &format!("\textern {symbol}\n");

@@ -155,9 +155,10 @@ impl Expr {
             Expr::Derefer(expr) => Ok(format!("{}\tmov rax, [rax]\n", expr.emit(ctx)?)),
             Expr::Let(name, value) => match &**name {
                 Expr::Variable(name) => {
-                    let idx = ctx.local.var.get_index_of(name).unwrap_or({
-                        ctx.local.var.insert(name.clone());
-                        ctx.local.var.len() - 1
+                    let env = &mut ctx.local.var;
+                    let idx = env.get_index_of(name).unwrap_or({
+                        env.insert(name.clone());
+                        env.len() - 1
                     });
                     Ok(format!(
                         "{}\tmov [rbp-{}], rax\n",

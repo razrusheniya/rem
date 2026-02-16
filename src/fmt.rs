@@ -21,17 +21,21 @@ impl Debug for Expr {
                 write!(f, "return {expr:?}")
             }
             Expr::Block(lines) => {
-                let lines = lines
-                    .iter()
-                    .map(|line| format!("{line:?}"))
-                    .collect::<Vec<String>>()
-                    .join("\n");
-                let lines = lines
-                    .lines()
-                    .map(|line| format!("\t{line}"))
-                    .collect::<Vec<String>>()
-                    .join("\n");
-                write!(f, "{{\n{lines}\n}}")
+                let block = {
+                    let mut fmt = String::new();
+                    for line in lines.iter() {
+                        fmt += &format!("{line:?}\n");
+                    }
+                    fmt
+                };
+                let fmt = {
+                    let mut fmt = String::new();
+                    for line in block.lines() {
+                        fmt += &format!("{line}\n");
+                    }
+                    fmt
+                };
+                write!(f, "{{\n{fmt}\n}}")
             }
             Expr::Call(callee, args) => {
                 let args = args

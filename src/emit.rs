@@ -170,7 +170,10 @@ impl Expr {
                     value.emit(ctx)?,
                     ptr.emit(ctx)?
                 )),
-                _ => Expr::Let(Box::new(Expr::Derefer(name.clone())), value.clone()).emit(ctx),
+                _ => {
+                    let derefer = Box::new(Expr::Derefer(name.clone()));
+                    Expr::Let(derefer, value.clone()).emit(ctx)
+                }
             },
             Expr::Integer(value) => Ok(format!("\tmov rax, {value}\n")),
             Expr::String(value) => {

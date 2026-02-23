@@ -24,7 +24,7 @@ https://github.com/user-attachments/assets/71d64e59-2969-4a10-b851-852a40acf384
 
 The **Rem** project aims to be useful programming language optimized for Linux computing.
 
-Rem just **simplifies** C with functional programming liked expression-based syntax. 
+Rem just **simplifies** C with functional programming style expression-based syntax. 
 
 > [!TIP]
 > I'm considering entry to 2026 U-22 Programming Contest

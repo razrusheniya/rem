@@ -167,7 +167,7 @@ impl Expr {
             },
             Expr::Integer(value) => Ok(format!("\tmov rax, {value}\n")),
             Expr::String(value) => {
-                let value = format!("{value}\", 0\"")
+                let value = format!("{value}, 0")
                     .replace("\\n", "\", 10, \"")
                     .replace("\\\"", "\", 34, \"")
                     .replace("\"\", ", "");

@@ -95,9 +95,13 @@ impl Expr {
             }
         } else if token.starts_with("\"") && token.ends_with("\"") {
             Ok(Expr::String(token.to_owned()))
-        } else if let Some(expr) = token.strip_prefix("(").and_then(|x| x.strip_suffix(")")) {
+        } else if let Some(expr) = token.strip_prefix("(")
+            .and_then(|x| x.strip_suffix(")")) 
+        {
             Expr::parse(expr)
-        } else if let (true, Some(expr)) = (token.contains("("), token.strip_suffix(")")) {
+        } else if let (true, Some(expr)) = 
+            (token.contains("("), token.strip_suffix(")")) 
+        {
             let (name, args) = ok!(expr.split_once("("))?;
             Ok(Expr::Call(
                 Box::new(Expr::parse(&name)?),
@@ -105,7 +109,9 @@ impl Expr {
                     .iter().map(|x| Expr::parse(x))
                     .collect::<Result<Vec<_>, String>>()?,
             ))
-        } else if let (true, Some(expr)) = (token.contains("["), token.strip_suffix("]")) {
+        } else if let (true, Some(expr)) = 
+            (token.contains("["), token.strip_suffix("]")) 
+        {
             let (arr, idx) = ok!(expr.rsplit_once("["))?;
             Ok(Expr::Derefer(Box::new(Expr::Add(
                 Box::new(Expr::parse(arr)?),

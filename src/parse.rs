@@ -67,7 +67,8 @@ impl Expr {
         {
             let mut block = vec![];
             for line in tokenize(token, "\n")? {
-                let (line, _) = once!(&line, ";").unwrap_or((line, String::new()));
+                let (line, _) = once!(&line, ";")
+                    .unwrap_or((line, String::new()));
                 if !line.trim().is_empty() {
                     block.push(Expr::parse(&line)?);
                 }

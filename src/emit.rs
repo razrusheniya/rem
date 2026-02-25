@@ -56,9 +56,7 @@ impl Expr {
             ($asm: literal, $lhs: expr, $rhs: expr) => {
                 format!(
                     "{}\tpush rax\n{}\tmov r10, rax\n\tpop rax\n\t{} rax, r10\n",
-                    $lhs.emit(ctx)?,
-                    $rhs.emit(ctx)?,
-                    $asm,
+                    $lhs.emit(ctx)?, $rhs.emit(ctx)?, $asm,
                 )
             };
         }
@@ -66,17 +64,18 @@ impl Expr {
             ($op: literal, $lhs: expr , $rhs: expr) => {
                 format!(
                     "{}\tset{} al\n\tmovzx rax, al\n",
-                    op!("cmp", $lhs, $rhs),
-                    $op
+                    op!("cmp", $lhs, $rhs), $op
                 )
             };
         }
         macro_rules! label {
-            () => {{
-                let id = ctx.global.idx;
-                ctx.global.idx += 1;
-                id.to_string()
-            }};
+            () => {
+                {
+                    let id = ctx.global.idx;
+                    ctx.global.idx += 1;
+                    id.to_string()
+                }
+            };
         }
 
         match self {
@@ -85,28 +84,21 @@ impl Expr {
                 if let Some(els) = els {
                     Ok(format!(
                         "if.{id}:\n{}\tcmp rax, 0\n\tje else.{id}\n{}\tjmp end_if.{id}\nelse.{id}:\n{}end_if.{id}:\n",
-                        cond.emit(ctx)?,
-                        then.emit(ctx)?,
-                        els.emit(ctx)?,
+                        cond.emit(ctx)?, then.emit(ctx)?, els.emit(ctx)?,
                     ))
                 } else {
                     Ok(format!(
                         "if.{id}:\n{}\tcmp rax, 0\n\tje end_if.{id}\n{}end_if.{id}:\n",
-                        cond.emit(ctx)?,
-                        then.emit(ctx)?,
+                        cond.emit(ctx)?, then.emit(ctx)?,
                     ))
                 }
             }
             Expr::While(cond, body) => {
-                let id = {
-                    let id = label!();
-                    ctx.local.jmp.push(id.clone());
-                    id
-                };
+                let id = label!();
+                ctx.local.jmp.push(id.clone());
                 let output = format!(
                     "while.{id}:\n{}\tcmp rax, 0\n\tje end_while.{id}\n{}\tjmp while.{id}\nend_while.{id}:\n",
-                    cond.emit(ctx)?,
-                    body.emit(ctx)?,
+                    cond.emit(ctx)?, body.emit(ctx)?,
                 );
                 ctx.local.jmp.pop();
                 Ok(output)
@@ -120,22 +112,20 @@ impl Expr {
             }
             Expr::Return(expr) => Ok(format!("{}\tleave\n\tret\n", expr.emit(ctx)?)),
             Expr::Block(lines) => Ok(lines
-                .iter()
-                .map(|line| line.emit(ctx))
+                .iter().map(|line| line.emit(ctx))
                 .collect::<Result<Vec<String>, String>>()?
                 .concat()),
             Expr::Call(callee, args) => {
-                let mut pusher = String::new();
-                let mut argset = String::new();
+                let mut arg_push = String::new();
+                let mut arg_mov = String::new();
                 for (idx, arg) in args.iter().rev().enumerate() {
-                    pusher += &format!("{}\tpush rax\n", arg.emit(ctx)?);
+                    arg_push += &format!("{}\tpush rax\n", arg.emit(ctx)?);
                     if let Some(reg) = ABI.get(idx) {
-                        argset += &format!("\tpop {reg}\n");
+                        arg_mov += &format!("\tpop {reg}\n");
                     }
                 }
-
-                let pre = pusher + &argset + &callee.emit(ctx)?;
-                Ok(format!("{pre}\tmov r10, rax\n\txor rax, rax\n\tcall r10\n"))
+                let prepare = [arg_push, arg_mov, callee.emit(ctx)?].concat();
+                Ok(format!("{prepare}\tmov r10, rax\n\txor rax, rax\n\tcall r10\n"))
             }
             Expr::Variable(name) => {
                 if let Some(i) = ctx.local.var.get_index_of(name) {
@@ -156,20 +146,19 @@ impl Expr {
             Expr::Let(name, value) => match &**name {
                 Expr::Variable(name) => {
                     let env = &mut ctx.local.var;
-                    let idx = env.get_index_of(name).unwrap_or({
+                    let idx = env.get_index_of(name)
+                    .unwrap_or({
                         env.insert(name.clone());
                         env.len() - 1
                     });
                     Ok(format!(
                         "{}\tmov [rbp-{}], rax\n",
-                        value.emit(ctx)?,
-                        (idx + 1) * 8
+                        value.emit(ctx)?, (idx + 1) * 8
                     ))
                 }
                 Expr::Derefer(ptr) => Ok(format!(
                     "{}\tpush rax\n{}\tpop r10\n\tmov [rax], r10\n",
-                    value.emit(ctx)?,
-                    ptr.emit(ctx)?
+                    value.emit(ctx)?, ptr.emit(ctx)?
                 )),
                 _ => {
                     let derefer = Box::new(Expr::Derefer(name.clone()));
@@ -180,7 +169,8 @@ impl Expr {
             Expr::String(value) => {
                 let value = value
                     .replace("\\n", "\", 10, \"")
-                    .replace("\\\"", "\", 34, \"");
+                    .replace("\\\"", "\", 34, \"")
+                    .replace("\"\",", "");
 
                 let name = format!("str.{}", label!());
                 let code = format!("\t{name} db {value}, 0\n");
@@ -203,11 +193,11 @@ impl Expr {
             Expr::Xor(lhs, rhs) => Ok(op!("xor", lhs, rhs)),
             Expr::Div(lhs, rhs) => Ok(format!(
                 "{}\tpush rax\n{}\tmov rsi, rax\n\tpop rax\n\tcqo\n\tidiv rsi\n",
-                lhs.emit(ctx)?,
-                rhs.emit(ctx)?,
+                lhs.emit(ctx)?, rhs.emit(ctx)?,
             )),
             Expr::Mod(lhs, rhs) => {
-                Ok(Expr::Div(lhs.clone(), rhs.clone()).emit(ctx)? + "\tmov rax, rdx\n")
+                let div = Expr::Div(lhs.clone(), rhs.clone());
+                Ok(div.emit(ctx)? + "\tmov rax, rdx\n")
             }
         }
     }

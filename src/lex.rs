@@ -14,10 +14,8 @@ pub mod name {
             if name.is_empty() {
                 return Err(format!("empty name"));
             }
-            if !name
-                .chars()
-                .all(|x| x == '_' || x.is_ascii_alphabetic() || x.is_digit(10))
-            {
+            let validate = |x| x == '_' || x.is_ascii_alphabetic() || x.is_digit(10);
+            if !name.chars().all(validate) {
                 return Err(format!("invalid name: {name}"));
             }
             if RESERVED.contains(&name) {

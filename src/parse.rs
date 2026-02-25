@@ -127,11 +127,10 @@ impl Expr {
 
 fn parse_op(source: &str) -> Result<Expr, String> {
     let tokens: Vec<String> = tokenize(source, SPACE)?;
-    let n = ok!(tokens.len().checked_sub(2))?;
-    let operator = ok!(tokens.get(n))?;
-    let lhs = &ok!(tokens.get(..n))?.join(SPACE);
-    let rhs = &ok!(tokens.get(n + 1..))?.join(SPACE);
-    Ok(match operator.as_str() {
+    let op = ok!(tokens.len().checked_sub(2))?;
+    let lhs = &ok!(tokens.get(..op))?.join(SPACE);
+    let rhs = &ok!(tokens.get(op + 1..))?.join(SPACE);
+    Ok(match ok!(tokens.get(op))?.as_str() {
         "+" => Expr::Add(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),
         "-" => Expr::Sub(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),
         "*" => Expr::Mul(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),

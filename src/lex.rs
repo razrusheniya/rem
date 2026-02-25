@@ -14,7 +14,7 @@ pub mod name {
             if name.is_empty() {
                 return Err(format!("empty name"));
             }
-            fn validate(x: char) {
+            fn validate(x: char) -> bool {
                 x == '_' || x.is_ascii_alphabetic() || x.is_digit(10)
             }
             if !name.chars().all(validate) {

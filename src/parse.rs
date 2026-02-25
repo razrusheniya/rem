@@ -51,7 +51,7 @@ impl Expr {
                     ))
                 }
             } else {
-                 Err(format!("`if` but `then` not found: {source}"))
+                 Err(format!("parse `if` but `then` not found: {source}"))
             }
         } else if let Some(token) = token.strip_prefix("while ") {
             if let Ok((cond, body)) = once!(token, "do") {
@@ -60,7 +60,7 @@ impl Expr {
                     Box::new(Expr::parse(&body)?),
                 ))
             } else {
-                Err(format!("`while` but `do` not found: {source}"))
+                Err(format!("parse `while` but `do` not found: {source}"))
             }
         } else if let Some(token) = token.strip_prefix("{").
             and_then(|token| token.strip_suffix("}"))

@@ -170,7 +170,7 @@ impl Expr {
                 let value = value
                     .replace("\\n", "\", 10, \"")
                     .replace("\\\"", "\", 34, \"")
-                    .replace("\"\",", "");
+                    .replace("\"\", ", "");
 
                 let name = format!("str.{}", label!());
                 let code = format!("\t{name} db {value}, 0\n");

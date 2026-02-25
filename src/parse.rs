@@ -10,8 +10,7 @@ impl Define {
                 let (head, body) = ok!(func.split_once(")"))?;
                 let (name, args) = ok!(head.split_once("("))?;
                 let args = tokenize(args, ",")?
-                    .iter()
-                    .map(|x| Name::new(x.trim()))
+                    .iter().map(|x| Name::new(x.trim()))
                     .collect::<Result<IndexSet<Name>, String>>()?;
                 let body = Expr::parse(body)?;
                 result.push(Define(Name::new(name)?, args, body));
@@ -52,7 +51,7 @@ impl Expr {
                     ))
                 }
             } else {
-                Err(format!("invalid `if` statement, `then` section not found"))
+                 Err(format!("`if` but `then` not found: {source}"))
             }
         } else if let Some(token) = token.strip_prefix("while ") {
             if let Ok((cond, body)) = once!(token, "do") {
@@ -61,19 +60,17 @@ impl Expr {
                     Box::new(Expr::parse(&body)?),
                 ))
             } else {
-                Err(format!("invalid `while` statement, `do` section not found"))
+                Err(format!("`while` but `do` not found: {source}"))
             }
-        } else if let Some(token) = token
-            .strip_prefix("{")
-            .and_then(|token| token.strip_suffix("}"))
+        } else if let Some(token) = token.strip_prefix("{").
+            and_then(|token| token.strip_suffix("}"))
         {
             let mut block = vec![];
             for line in tokenize(token, "\n")? {
                 let (line, _) = once!(&line, ";").unwrap_or((line, String::new()));
-                if line.trim().is_empty() {
-                    continue;
+                if !line.trim().is_empty() {
+                    block.push(Expr::parse(&line)?);
                 }
-                block.push(Expr::parse(&line)?);
             }
             Ok(Expr::Block(block))
         } else if let Some(token) = token.strip_prefix("break ") {
@@ -94,7 +91,7 @@ impl Expr {
             } else if let Ok(Expr::Derefer(ptr)) = Expr::parse(ptr) {
                 Ok(*ptr.clone())
             } else {
-                Err(format!("invalid reference"))
+                Err(format!("invalid reference: {ptr}"))
             }
         } else if token.starts_with("\"") && token.ends_with("\"") {
             Ok(Expr::String(token.to_owned()))

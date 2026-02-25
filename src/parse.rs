@@ -102,8 +102,7 @@ impl Expr {
             Ok(Expr::Call(
                 Box::new(Expr::parse(&name)?),
                 tokenize(&args, ",")?
-                    .iter()
-                    .map(|x| Expr::parse(x))
+                    .iter().map(|x| Expr::parse(x))
                     .collect::<Result<Vec<_>, String>>()?,
             ))
         } else if let (true, Some(expr)) = (token.contains("["), token.strip_suffix("]")) {
@@ -127,24 +126,30 @@ impl Expr {
 
 fn parse_op(source: &str) -> Result<Expr, String> {
     let tokens: Vec<String> = tokenize(source, SPACE)?;
+
     let op = ok!(tokens.len().checked_sub(2))?;
     let lhs = &ok!(tokens.get(..op))?.join(SPACE);
     let rhs = &ok!(tokens.get(op + 1..))?.join(SPACE);
-    Ok(match ok!(tokens.get(op))?.as_str() {
-        "+" => Expr::Add(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),
-        "-" => Expr::Sub(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),
-        "*" => Expr::Mul(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),
-        "/" => Expr::Div(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),
-        "%" => Expr::Mod(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),
-        "==" => Expr::Eql(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),
-        "!=" => Expr::NotEq(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),
-        ">" => Expr::Gt(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),
-        "<" => Expr::Lt(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),
-        ">=" => Expr::GtEq(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),
-        "<=" => Expr::LtEq(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),
-        "&" => Expr::And(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),
-        "|" => Expr::Or(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),
-        "^" => Expr::Xor(Box::new(Expr::parse(lhs)?), Box::new(Expr::parse(rhs)?)),
+
+    let op = ok!(tokens.get(op))?.as_str();
+    let lhs = Box::new(Expr::parse(lhs)?);
+    let rhs = Box::new(Expr::parse(rhs)?);
+
+    Ok(match op {
+        "+" => Expr::Add(lhs, rhs),
+        "-" => Expr::Sub(lhs, rhs),
+        "*" => Expr::Mul(lhs, rhs),
+        "/" => Expr::Div(lhs, rhs),
+        "%" => Expr::Mod(lhs, rhs),
+        "==" => Expr::Eql(lhs, rhs),
+        "!=" => Expr::NotEq(lhs, rhs),
+        ">" => Expr::Gt(lhs, rhs),
+        "<" => Expr::Lt(lhs, rhs),
+        ">=" => Expr::GtEq(lhs, rhs),
+        "<=" => Expr::LtEq(lhs, rhs),
+        "&" => Expr::And(lhs, rhs),
+        "|" => Expr::Or(lhs, rhs),
+        "^" => Expr::Xor(lhs, rhs),
         op => return Err(format!("unknown operator: {op}")),
     })
 }

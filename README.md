@@ -22,11 +22,8 @@ https://github.com/user-attachments/assets/71d64e59-2969-4a10-b851-852a40acf384
 
 ## Goal
 
-The **Rem** project aims to be useful programming language optimized for Linux computing.
+I aim to optimize Rem for Linux computing by original compiler backends.
 
-Rem just does **simplify** C with expression-based syntax in functional programming style. 
-
-> [!TIP]
-> I'm considering entry to 2026 U-22 Programming Contest
+Rem just does **simplify** C with expression-based syntax in the Functional programming style. 
 
 Thanks for support Rem project.

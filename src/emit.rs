@@ -167,13 +167,13 @@ impl Expr {
             },
             Expr::Integer(value) => Ok(format!("\tmov rax, {value}\n")),
             Expr::String(value) => {
-                let value = value
+                let value = value + ", 0"
                     .replace("\\n", "\", 10, \"")
                     .replace("\\\"", "\", 34, \"")
                     .replace("\"\", ", "");
 
                 let name = format!("str.{}", label!());
-                let code = format!("\t{name} db {value}, 0\n");
+                let code = format!("\t{name} db {value}\n");
                 ctx.global.data += &code;
 
                 Ok(format!("\tmov rax, {name}\n"))

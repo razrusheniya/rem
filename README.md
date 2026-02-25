@@ -1,7 +1,7 @@
 # Rem 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/razrusheniya/rem)
 
-***Make C more easy to code!*** the low-layer programming language
+**_Make C more easy to code!_** the low-layer programming language
 
 > [!NOTE]
 > Compile for x86_64 Linux PC only (tested on Debian)
@@ -22,8 +22,11 @@ https://github.com/user-attachments/assets/71d64e59-2969-4a10-b851-852a40acf384
 
 ## Goal
 
-I aim to optimize Rem for Linux computing by original compiler backends.
+The goal in this project is that optimize Rem for Linux computing.
 
-Rem just does **simplify** C with expression-based syntax in the Functional programming style. 
+By original compiler backends, emits Netwide assembler code directly.
+
+> [!TIP]
+> Rem just does **simplify** C with expression-based syntax in the Functional programming style. 
 
 Thanks for support Rem project.

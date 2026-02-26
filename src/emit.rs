@@ -160,10 +160,7 @@ impl Expr {
                     "{}\tpush rax\n{}\tpop r10\n\tmov [rax], r10\n",
                     value.emit(ctx)?, ptr.emit(ctx)?
                 )),
-                _ => {
-                    let derefer = Box::new(Expr::Derefer(name.clone()));
-                    Expr::Let(derefer, value.clone()).emit(ctx)
-                }
+                _ => Err(format!("can't assign to unknown object"))
             },
             Expr::Integer(value) => Ok(format!("\tmov rax, {value}\n")),
             Expr::String(value) => {

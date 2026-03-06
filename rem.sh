@@ -20,7 +20,7 @@ update() {
     cargo install --path .
 }
 
-if  ["$#" -ne 1 ]; then
+if  [ "$#" -ne 1 ]; then
     run "$@"
 elif [ $1 = "--update" ]; then
     update

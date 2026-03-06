@@ -113,8 +113,7 @@ impl Expr {
             Expr::Return(expr) => Ok(format!("{}\tleave\n\tret\n", expr.emit(ctx)?)),
             Expr::Block(lines) => Ok(lines
                 .iter().map(|line| line.emit(ctx))
-                .collect::<Result<Vec<String>, String>>()?
-                .concat()),
+                .collect::<Result<String, String>>()?),
             Expr::Call(callee, args) => {
                 let mut arg_push = String::new();
                 let mut arg_mov = String::new();

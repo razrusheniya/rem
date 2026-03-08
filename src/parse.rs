@@ -9,8 +9,7 @@ impl Define {
             if let Some(func) = line.strip_prefix("fn ") {
                 let (head, body) = ok!(func.split_once(")"))?;
                 let (name, args) = ok!(head.split_once("("))?;
-                let args = tokenize(args, ",")?
-                    .iter().map(|x| Name::new(x.trim()))
+                let args = tokenize(args, ",")?.iter().map(Name::new)
                     .collect::<Result<IndexSet<Name>, String>>()?;
                 let body = Expr::parse(body)?;
                 result.push(Define(Name::new(name)?, args, body));

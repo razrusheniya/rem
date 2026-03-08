@@ -10,7 +10,7 @@ impl Define {
                 let (head, body) = ok!(func.split_once(")"))?;
                 let (name, args) = ok!(head.split_once("("))?;
                 let args = tokenize(args, ",")?
-                    .iter().map(String::as_str).map(Name::new)
+                    .iter().map(|x| Name::new(&x))
                     .collect::<Result<IndexSet<Name>, String>>()?;
                 let body = Expr::parse(body)?;
                 result.push(Define(Name::new(name)?, args, body));

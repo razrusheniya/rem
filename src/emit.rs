@@ -25,7 +25,7 @@ impl Define {
 
             ctx.local = Function::default();
             ctx.local.var = args.clone();
-            
+
             let body = body.emit(ctx)?;
             let bytes = ctx.local.var.len() * 8;
 
@@ -33,7 +33,7 @@ impl Define {
                 "{name}:\n\tpush rbp\n\tmov rbp, rsp\n\tsub rsp, {}\n", 
                 if bytes % 16 == 0 { bytes } else { bytes + 8 }
             );
-            output += format!("{prologue}{body}\tleave\n\tret\n\n")
+            output += &format!("{prologue}{body}\tleave\n\tret\n\n")
         }
 
         for Define(name, _, _) in &defines {

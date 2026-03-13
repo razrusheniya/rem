@@ -4,7 +4,7 @@
 **_Make C more easy to code!_** the low-layer programming language
 
 > [!NOTE]
-> Compile for x86_64 Linux PC only (tested on Debian)
+> Compile for x86_64 Linux PC only (tested on Debian 13)
 
 ## Features
 

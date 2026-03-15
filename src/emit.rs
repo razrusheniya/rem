@@ -30,10 +30,9 @@ impl Define {
             let bytes = ctx.local.var.len() * 8;
 
             output += &format!(
-                "{name}:\n\tpush rbp\n\tmov rbp, rsp\n\tsub rsp, {}\n", 
+                "{name}:\n\tpush rbp\n\tmov rbp, rsp\n\tsub rsp, {}\n{prologue}{body}\tleave\n\tret\n\n", 
                 if bytes % 16 == 0 { bytes } else { bytes + 8 }
             );
-            output += &format!("{prologue}{body}\tleave\n\tret\n\n")
         }
 
         for Define(name, _, _) in &defines {

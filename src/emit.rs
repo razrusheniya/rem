@@ -168,8 +168,7 @@ impl Expr {
                     .replace("\"\", ", "");
 
                 let name = format!("str.{}", label!());
-                let code = format!("\t{name} db {value}\n");
-                ctx.global.data += &code;
+                ctx.global.data += &format!("\t{name} db {value}\n");
 
                 Ok(format!("\tmov rax, {name}\n"))
             }
